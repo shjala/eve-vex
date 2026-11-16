@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>EVE VEX</title>
+<style>body{font:16px system-ui,sans-serif;max-width:1000px;margin:4rem auto;padding:0 1rem;color:#172534;background:#f7f9fc}h1{font-size:2.5rem}a{color:#175db4}table{border-collapse:collapse;width:100%;background:white}th,td{text-align:left;padding:1rem;border-bottom:1px solid #d9e0e8}footer{margin-top:3rem;color:#526171}#error{color:#a21b1b}.table{overflow:auto}</style></head>
+<body><h1>EVE VEX</h1><p>OpenVEX documents published by CVEWatch. Each release URL serves its latest published document.</p>
+<p><a href="index.json">Machine-readable index (JSON)</a></p><p id="loading" role="status">Loading versions…</p><p id="error" role="alert"></p>
+<div class="table"><table hidden id="versions"><thead><tr><th>Surface</th><th>Version</th><th>Document revision</th><th>Updated (UTC)</th><th>OpenVEX</th></tr></thead><tbody></tbody></table></div>
+<footer>Assessment status, scope, author and role are recorded in each document. Documents are updated in place when a new revision is published.</footer>
+<script>
+(async()=>{try{const response=await fetch('index.json',{cache:'no-store'});if(!response.ok)throw Error();const index=await response.json();if(index.schema_version!==1||!Array.isArray(index.documents))throw Error();const rows=index.documents.sort((a,b)=>a.platform.localeCompare(b.platform)||b.version.localeCompare(a.version,undefined,{numeric:true}));
+for(const entry of rows){if(!/^[a-z][a-z0-9_-]*$/.test(entry.platform)||!/^\d+\.\d+\.\d+-lts$/.test(entry.version))throw Error();const path=entry.platform+'/'+entry.version+'/openvex.json';const expected=new URL(path,location.href);if(entry.url!==expected.href)throw Error();const tr=document.createElement('tr');for(const value of [entry.platform,entry.version,entry.document_version,entry.updated_at]){const td=document.createElement('td');td.textContent=String(value);tr.append(td)}const td=document.createElement('td'),link=document.createElement('a');link.href=path;link.textContent='Download JSON';td.append(link);tr.append(td);document.querySelector('tbody').append(tr)}document.querySelector('#versions').hidden=!rows.length;document.querySelector('#loading').textContent=rows.length?'':'No VEX versions have been published yet.';
+}catch{document.querySelector('#loading').textContent='';document.querySelector('#error').textContent='Could not load the publication index. Please try again.'}})();
+</script></body></html>
