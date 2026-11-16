@@ -1,0 +1,61 @@
+{
+  "@context": "https://openvex.dev/ns/v0.2.0",
+  "@id": "urn:cvewatch:vex:ac74a36cab4b79377ac4ea327ecc0bd6d08c5d3711fe1afdecfa14e17e690b9b",
+  "author": "eve-security@lists.lfedge.org",
+  "role": "Draft; not an approved supplier publication",
+  "timestamp": "2026-11-16T11:54:37.104918894Z",
+  "last_updated": "2026-11-16T14:08:28.695219194Z",
+  "version": 6,
+  "tooling": "CVE Watch OpenVEX",
+  "statements": [
+    {
+      "vulnerability": {
+        "name": "CVE-2026-34182",
+        "aliases": [
+          "ALPINE-CVE-2026-34182"
+        ]
+      },
+      "products": [
+        {
+          "@id": "urn:cvewatch:inventory:dbe59a598afc859f9852313fd3f0765ee8d38989d36d2f0b5f97fce28b29a7fb",
+          "subcomponents": [
+            {
+              "@id": "pkg:apk/busybox/libcrypto3@3.5.4-r0?arch=x86_64\u0026distro=busybox-1.37.0\u0026upstream=openssl"
+            },
+            {
+              "@id": "pkg:apk/busybox/libssl3@3.5.4-r0?arch=x86_64\u0026distro=busybox-1.37.0\u0026upstream=openssl"
+            }
+          ]
+        }
+      ],
+      "status": "not_affected",
+      "status_notes": "Status is not_affected for EVE 17.0.1-lts (branch 17.0), based on the completed reachability analysis of CVE-2026-34182 (OpenSSL CMS AuthEnvelopedData validation). The affected package is present: libcrypto3 and libssl3 3.5.4-r0 are listed, and the pillar Dockerfile (line 154) includes libcrypto3. The reachability verdict is 'not reachable' with medium confidence. No executable path from external input to OpenSSL CMS decryption was found. SCEP responses are parsed with the Go smallstep library via pkcs7.Parse (/src/pkg/pillar/cmd/scepclient/scep.go:40 and :412), not OpenSSL. Repository-wide searches found no CMS_decrypt or other CMS API call sites, no openssl cms or openssl smime decryption use, and no openssl/cms.h includes. OpenSSL command-line use in scripts is key generation (generate-onboard.sh:45) and HMAC digests (azure-check.sh:152). The risk assessment rates risk low with medium confidence. Uncertainties: the findings cover repository source only; third-party binaries and other image layers were not examined; the container carrying the packages is recorded as 'unknown (apk db)'; and the recorded fixed_version (3.3.7-r1) does not match the 3.5.x baseline. Both listed variants (libcrypto3 and libssl3) share the same reachability result.",
+      "impact_statement": "The vulnerable OpenSSL code is present in the image but, on the evidence assessed, nothing in the project's own code calls the affected CMS decryption functions, so the flaw is not reachable through the analyzed code paths. If it were triggered, the effect would be CMS integrity bypass or recovery of a content-encryption key, with no availability impact. The assessment judges the realistic impact on EVE as minimal because no CMS consumer was identified. Exploitation would need some component calling OpenSSL CMS decryption on attacker-influenced data, an on-path or message-supplying attacker, and, for the key-recovery attack, an application that reveals decryption success. Documented context: EVE opens no inbound application ports on management interfaces by default (guidance §1.4), controller traffic uses mTLS with signed configuration, and the root filesystem is a read-only immutable image with no runtime package installation (§3.1, §3.3). These limit additional consumers but do not remove the library. The FIPS modules are not affected. Residual risk is low. This conclusion does not extend to compiled third-party binaries, other image layers, or application workloads that may carry their own OpenSSL, none of which were assessed.",
+      "timestamp": "2026-11-16T11:53:42.782410388Z"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2024-45337",
+        "aliases": [
+          "GHSA-v778-237x-gjrc",
+          "GO-2024-3321"
+        ]
+      },
+      "products": [
+        {
+          "@id": "urn:cvewatch:inventory:dbe59a598afc859f9852313fd3f0765ee8d38989d36d2f0b5f97fce28b29a7fb",
+          "subcomponents": [
+            {
+              "@id": "pkg:golang/golang.org/x/crypto@v0.0.0-20220408190544-5352b0902921"
+            }
+          ]
+        }
+      ],
+      "status": "not_affected",
+      "status_notes": "Status is not_affected (vulnerable_code_not_present) for CVE-2024-45337 in the fscrypt container of EVE 17.0.1-lts, the only component and variant assessed here. The reachability report (high confidence) found the container is built from google/fscrypt v0.3.4 (Dockerfile:17, :20), whose go.mod:10 requires golang.org/x/crypto v0.0.0-20220408190544-5352b0902921, older than the fixed 0.31.0. The affected version is therefore present. The vulnerable code is not. x/crypto use is limited to argon2 and hkdf (crypto/crypto.go:44-45). Repository-wide searches found no golang.org/x/crypto/ssh, PublicKeyCallback, ServerConfig or NewServerConn. The final image copies built binaries only (Dockerfile:35). No call path was identified. The risk assessment rates risk negligible with medium confidence and residual risk very low. Limitations: the risk assessment did not independently re-verify the source search and relied on the reachability report. Other EVE components that bundle x/crypto, including the SSH debug console and EdgeView, were not assessed under this finding, so this result is not extended to them.",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The issue affects only applications that run an SSH server and make authorization decisions through ssh.ServerConfig.PublicKeyCallback. Based on the reachability evidence, the fscrypt binary in this version contains no such code. It is a local tool for vault key and directory encryption, and it opens no network listener. The risk assessment expects no impact from this CVE in this artifact. It also cites guidance describing EVE as outbound-only by default, with SSH optional and key-only. That guidance is architectural and does not show how any particular deployment is configured. The reported controls are the absence of SSH server symbols in fscrypt v0.3.4 and the built-binaries-only final image. The older x/crypto version remains in the module requirements, which the assessment treats as very low residual risk. This conclusion applies to the fscrypt container in 17.0.1-lts only. It does not cover other components, containers or releases.",
+      "timestamp": "2026-11-16T11:53:22.162824164Z"
+    }
+  ]
+}

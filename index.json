@@ -1,1 +1,13 @@
-{"schema_version":1,"documents":[]}
+{
+  "schema_version": 1,
+  "documents": [
+    {
+      "platform": "eve",
+      "version": "17.0.1-lts",
+      "document_version": 6,
+      "url": "https://defense.sh/eve-vex/eve/17.0.1-lts/openvex.json",
+      "sha256": "2f213f193264bc20b742bf82c24c037b0a35efcf2b3214e707b66319ce0739cb",
+      "updated_at": "2026-11-16T14:56:42Z"
+    }
+  ]
+}
